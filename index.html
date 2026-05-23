@@ -89,13 +89,14 @@
     font-size: clamp(48px, 9vw, 120px);
     line-height: 0.95; letter-spacing: -0.01em;
     margin-top: auto;
-    color: rgba(245, 242, 235, 0.95);
+    color: #ffffff;
     display: inline-block;
     padding: 0.1em 0.15em 0.05em;
     backdrop-filter: blur(14px) brightness(1.02);
     -webkit-backdrop-filter: blur(14px) brightness(1.02);
-    background: rgba(235, 232, 224, 0.08);
+    background: rgba(0, 0, 0, 0.38);
     border-radius: 2px;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.45);
   }
   .hero-bottom {
     display: flex; justify-content: space-between; align-items: flex-end;
@@ -350,7 +351,7 @@
 <body>
 
 <nav>
-  <div class="logo" onclick="showPage('home')" style="cursor:pointer;">demi gao ▮</div>
+  <div class="logo" onclick="showPage('home')" style="cursor:pointer;">Demi Gao ▮</div>
   <ul>
     <li><a href="#" onclick="showPage('home'); return false;" data-page="home">Home</a></li>
     <li><a href="#" onclick="showPage('bio'); return false;" data-page="bio">Bio</a></li>
