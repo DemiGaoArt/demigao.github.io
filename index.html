@@ -165,28 +165,35 @@
   .work-block { padding: 56px 32px 88px; max-width: 1040px; margin: 0 auto; }
   .work-block .main-row,
   .work-details {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 240px)) !important;
-    gap: 20px 16px;
-    align-items: start;
-    justify-content: center;
+    display: flex !important;
+    flex-wrap: nowrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: safe center;
+    width: 100%;
   }
   .work-block .main-row {
     margin: 0 auto 16px !important;
     max-width: 100% !important;
   }
-  .main-row > .work-details { display: contents; }
+  .main-row > .work-details { display: contents !important; }
 
   .work-main,
   .work-detail {
-    width: 100%;
+    flex: 1 1 0;
+    width: auto;
     max-width: 240px;
     min-height: 0;
-    justify-self: center;
+    min-width: 0;
     position: relative;
     overflow: visible;
     background: transparent;
     cursor: zoom-in;
+  }
+  .main-row:not(:has(.work-details)) > .work-main:only-child,
+  .main-row:not(:has(.work-details)) > .work-detail:only-child {
+    flex: 0 1 340px;
+    max-width: 340px;
   }
   .work-main img,
   .work-detail img {
@@ -286,9 +293,20 @@
     .work-block { padding: 40px 20px 60px; }
     .work-block .main-row,
     .work-details {
-      grid-template-columns: repeat(auto-fit, minmax(140px, 220px)) !important;
-      gap: 16px 12px;
-      justify-content: center;
+      gap: 12px;
+      overflow-x: auto;
+      justify-content: safe center;
+      padding-bottom: 4px;
+    }
+    .work-main,
+    .work-detail {
+      flex: 0 0 min(42vw, 180px);
+      max-width: 180px;
+    }
+    .main-row:not(:has(.work-details)) > .work-main:only-child,
+    .main-row:not(:has(.work-details)) > .work-detail:only-child {
+      flex: 0 1 min(76vw, 320px);
+      max-width: 320px;
     }
     .cv-entry { grid-template-columns: 90px 1fr; gap: 12px; }
     #contact { padding: 80px 20px; }
@@ -362,8 +380,7 @@
   @media (max-width: 480px) {
     .work-block .main-row,
     .work-details {
-      grid-template-columns: minmax(0, 220px) !important;
-      justify-content: center;
+      gap: 10px;
     }
   }
 </style>
@@ -1086,8 +1103,6 @@ function handleMissing(img) {
       <div class="main-row">
         <div class="work-main"><img src="images/threshold-digital.jpg" alt="Threshold of Appearance - Digital" onerror="handleMissing(this)"></div>
         <div class="work-main"><img src="images/threshold-physical.jpg" alt="Threshold of Appearance - Physical" onerror="handleMissing(this)"></div>
-      </div>
-      <div class="work-details" style="margin-top: 16px; grid-template-columns: 1fr 1fr;">
         <div class="work-detail"><img src="images/threshold-physical-detail-1.jpg" alt="" onerror="handleMissing(this)"></div>
         <div class="work-detail"><img src="images/threshold-physical-detail-2.jpg" alt="" onerror="handleMissing(this)"></div>
       </div>
@@ -1101,8 +1116,6 @@ function handleMissing(img) {
       <div class="main-row">
         <div class="work-main"><img src="images/seduction-digital.jpg" alt="Seduction Error - Digital" onerror="handleMissing(this)"></div>
         <div class="work-main"><img src="images/seduction-physical.jpg" alt="Seduction Error - Physical" onerror="handleMissing(this)"></div>
-      </div>
-      <div class="work-details" style="margin-top: 16px; grid-template-columns: 1fr 1fr 1fr;">
         <div class="work-detail"><img src="images/seduction-physical-detail-1.jpg" alt="" onerror="handleMissing(this)"></div>
         <div class="work-detail"><img src="images/seduction-physical-detail-2.jpg" alt="" onerror="handleMissing(this)"></div>
         <div class="work-detail"><img src="images/seduction-physical-detail-3.jpg" alt="" onerror="handleMissing(this)"></div>
