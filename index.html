@@ -162,32 +162,40 @@
   .series-name { font-family: 'VT323', monospace; font-size: clamp(40px, 6vw, 80px); line-height: 0.95; }
   .series-desc { font-size: 14px; line-height: 1.7; color: var(--fg-dim); max-width: 480px; }
 
-  .work-block { padding: 60px 32px 100px; max-width: 1100px; margin: 0 auto; }
+  .work-block { padding: 56px 32px 88px; max-width: 1040px; margin: 0 auto; }
   .work-block .main-row,
   .work-details {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 240px)) !important;
+    gap: 20px 16px;
     align-items: start;
+    justify-content: center;
   }
   .work-block .main-row {
-    margin: 0 0 16px !important;
-    max-width: none !important;
+    margin: 0 auto 16px !important;
+    max-width: 100% !important;
   }
   .main-row > .work-details { display: contents; }
 
   .work-main,
   .work-detail {
-    aspect-ratio: 4 / 3;
-    background: #d8d4c8; overflow: hidden;
-    cursor: zoom-in; position: relative;
+    width: 100%;
+    max-width: 240px;
     min-height: 0;
-    display: flex; align-items: center; justify-content: center;
+    justify-self: center;
+    position: relative;
+    overflow: visible;
+    background: transparent;
+    cursor: zoom-in;
   }
   .work-main img,
   .work-detail img {
-    width: 100%; height: 100%; display: block;
+    width: 100%;
+    height: auto;
+    max-height: 320px;
+    display: block;
     object-fit: contain;
+    margin: 0 auto;
     transition: opacity 0.25s ease;
   }
   .work-main:hover img,
@@ -277,7 +285,11 @@
     .series-header { padding: 60px 20px 32px; }
     .work-block { padding: 40px 20px 60px; }
     .work-block .main-row,
-    .work-details { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px; }
+    .work-details {
+      grid-template-columns: repeat(auto-fit, minmax(140px, 220px)) !important;
+      gap: 16px 12px;
+      justify-content: center;
+    }
     .cv-entry { grid-template-columns: 90px 1fr; gap: 12px; }
     #contact { padding: 80px 20px; }
     .contact-meta { flex-direction: column; gap: 12px; }
@@ -349,9 +361,38 @@
 
   @media (max-width: 480px) {
     .work-block .main-row,
-    .work-details { grid-template-columns: 1fr !important; }
+    .work-details {
+      grid-template-columns: minmax(0, 220px) !important;
+      justify-content: center;
+    }
   }
 </style>
+<script>
+function handleMissing(img) {
+  try {
+    var src = img.getAttribute('src') || '';
+    var filename = src.replace('images/', '').replace('.jpg', '');
+    if (img.classList.contains('hero-bg')) {
+      var div = document.createElement('div');
+      div.className = 'hero-bg placeholder';
+      div.textContent = '[ ' + src + ' ]';
+      if (img.parentNode) img.parentNode.replaceChild(div, img);
+      return;
+    }
+    var parent = img.parentElement;
+    if (!parent) return;
+    if (parent.classList.contains('work-main')) {
+      parent.classList.add('placeholder');
+      parent.innerHTML = '[ ' + src + ' ]';
+    } else if (parent.classList.contains('work-detail')) {
+      parent.classList.add('placeholder');
+      parent.innerHTML = '[ ' + filename + ' ]';
+    }
+  } catch(e) {
+    img.style.display = 'none';
+  }
+}
+</script>
 </head>
 <body>
 
@@ -684,6 +725,37 @@
       <h2 class="series-name">Screenprint.</h2>
     </div>
   </div>
+
+  <div class="work-block">
+    <div class="main-row">
+      <div class="work-main"><img src="images/misregistered-receding-combo.jpg" alt="Misregistered Gaze and Receding — combined view" onerror="handleMissing(this)"></div>
+      <div class="work-main"><img src="images/misregistered-gaze-screenprint-main.jpg" alt="错位的注视 / Misregistered Gaze — main view" onerror="handleMissing(this)"></div>
+      <div class="work-main"><img src="images/receding-screenprint-main.jpg" alt="退潮 / Receding — main view" onerror="handleMissing(this)"></div>
+      <div class="work-main"><img src="images/receding-screenprint-detail-1.jpg" alt="退潮 / Receding — detail" onerror="handleMissing(this)"></div>
+    </div>
+    <div class="work-caption">
+      <div class="caption-entry">
+        <div class="title">错位的注视 / Misregistered Gaze</div>
+        <div class="meta">2026 · Screenprint on veil · Image size: 31 × 41 cm (frame only, excluding fabric)</div>
+      </div>
+      <div class="caption-entry" style="margin-top: 18px;">
+        <div class="title">退潮 / Receding</div>
+        <div class="meta">2026 · Screenprint on organza, plaster wall skin · Image size: 30 × 40 cm (frame only, excluding fabric)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="work-block">
+    <div class="main-row">
+      <div class="work-main"><img src="images/slow-vanishing-main.jpg" alt="A Slow Vanishing / 一场缓慢的隐去 — main view" onerror="handleMissing(this)"></div>
+      <div class="work-detail"><img src="images/slow-vanishing-detail-1.jpg" alt="A Slow Vanishing detail 1" onerror="handleMissing(this)"></div>
+      <div class="work-detail"><img src="images/slow-vanishing-detail-2.jpg" alt="A Slow Vanishing detail 2" onerror="handleMissing(this)"></div>
+    </div>
+    <div class="work-caption">
+      <div class="title">A Slow Vanishing / 一场缓慢的隐去</div>
+      <div class="meta">2026 · Screenprint on canvas · 60 × 80 cm</div>
+    </div>
+  </div>
 </section>
 
 <section class="page" id="mixed-media">
@@ -693,6 +765,100 @@
         <h2 class="series-name">Mixed Media.</h2>
       </div>
       <p class="series-desc">Surfaces that admit their own making — accidents kept, repairs visible, materials given time to decide their own edges.</p>
+    </div>
+
+
+    <div class="work-block">
+      <div class="main-row">
+        <div class="work-main"><img src="images/soft-captivity-main.jpg" alt="Soft Captivity / 柔软的囚禁 — main view" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/soft-captivity-detail-1.jpg" alt="Soft Captivity detail" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/soft-captivity-install-1.jpg" alt="Soft Captivity graduation exhibition view" onerror="handleMissing(this)"></div>
+      </div>
+      <div class="work-caption">
+        <div class="title">Soft Captivity / 柔软的囚禁</div>
+        <div class="meta">2026 · Backlight film in LED light box · 60 × 80 cm</div>
+      </div>
+    </div>
+
+    <div class="work-block">
+      <div class="main-row">
+        <div class="work-main"><img src="images/soft-interference-mixed-main.jpg" alt="Soft Interference / 柔性干扰 — mixed-media version" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/soft-interference-mixed-detail-1.jpg" alt="Soft Interference detail 1" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/soft-interference-mixed-detail-2.jpg" alt="Soft Interference detail 2" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/soft-interference-mixed-detail-3.jpg" alt="Soft Interference detail 3" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/soft-interference-mixed-detail-4.jpg" alt="Soft Interference detail 4" onerror="handleMissing(this)"></div>
+      </div>
+      <div class="work-caption">
+        <div class="title">Soft Interference / 柔性干扰</div>
+        <div class="meta">2026 · Digital work printed on organza · 120 × 160 cm</div>
+      </div>
+    </div>
+
+    <div class="work-block">
+      <div class="main-row">
+        <div class="work-main"><img src="images/anatomy-echo-main.jpg" alt="Anatomy of an Echo / 回声的解剖 — main view" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/anatomy-echo-detail-1.jpg" alt="Anatomy of an Echo detail 1" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/anatomy-echo-detail-2.jpg" alt="Anatomy of an Echo detail 2" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/anatomy-echo-detail-3.jpg" alt="Anatomy of an Echo detail 3" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/anatomy-echo-detail-4.jpg" alt="Anatomy of an Echo detail 4" onerror="handleMissing(this)"></div>
+      </div>
+      <div class="work-caption">
+        <div class="title">Anatomy of an Echo / 回声的解剖</div>
+        <div class="meta">2026 · Reactive dye print on velvet · 80 × 100 cm (image size)</div>
+      </div>
+    </div>
+
+    <div class="work-block">
+      <div class="main-row">
+        <div class="work-main"><img src="images/blind-spot-mixed-main.jpg" alt="Blind Spot Inventory / 盲区清单 — mixed-media version" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/blind-spot-mixed-detail-1.jpg" alt="Blind Spot Inventory detail" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/blind-spot-mixed-install-1.jpg" alt="Blind Spot Inventory graduation exhibition view" onerror="handleMissing(this)"></div>
+      </div>
+      <div class="work-caption">
+        <div class="title">Blind Spot Inventory / 盲区清单</div>
+        <div class="meta">2026 · Mixed Media · 21.0 × 29.7 cm</div>
+      </div>
+    </div>
+
+    <div class="work-block">
+      <div class="main-row">
+        <div class="work-main"><img src="images/blue-hush-main.jpg" alt="Blue Hush — main view" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/blue-hush-detail-1.jpg" alt="Blue Hush detail 1" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/blue-hush-detail-2.jpg" alt="Blue Hush detail 2" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/blue-hush-detail-3.jpg" alt="Blue Hush detail 3" onerror="handleMissing(this)"></div>
+      </div>
+      <div class="work-caption">
+        <div class="title">Blue Hush</div>
+        <div class="meta">2026 · Mixed Media · 64 × 102.4 cm</div>
+      </div>
+    </div>
+
+    <div class="work-block">
+      <div class="main-row">
+        <div class="work-main"><img src="images/temporary-monument-main.jpg" alt="Temporary Monument / 临时纪念碑 — main view" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/temporary-monument-detail-1.jpg" alt="Temporary Monument detail 1" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/temporary-monument-detail-2.jpg" alt="Temporary Monument detail 2" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/temporary-monument-detail-3.jpg" alt="Temporary Monument detail 3" onerror="handleMissing(this)"></div>
+      </div>
+      <div class="work-caption">
+        <div class="title">Temporary Monument / 临时纪念碑</div>
+        <div class="meta">2026 · Digital work printed on backlight film · 34 × 59 cm (framed)</div>
+      </div>
+    </div>
+
+    <div class="work-block">
+      <div class="main-row">
+        <div class="work-main"><img src="images/overflow-main.jpg" alt="Overflow / 溢出 — main view" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/overflow-detail-1.jpg" alt="Overflow detail 1" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/overflow-detail-2.jpg" alt="Overflow detail 2" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/overflow-detail-3.jpg" alt="Overflow detail 3" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/overflow-detail-4.jpg" alt="Overflow detail 4" onerror="handleMissing(this)"></div>
+        <div class="work-detail"><img src="images/overflow-detail-5.jpg" alt="Overflow detail 5" onerror="handleMissing(this)"></div>
+      </div>
+      <div class="work-caption">
+        <div class="title">Overflow / 溢出</div>
+        <div class="meta">2026 · Screenprint, jute scrim, alum crystal, acrylic on canvas · 90 × 120 cm</div>
+      </div>
     </div>
 
     <div class="work-block">
@@ -839,6 +1005,27 @@
       <p class="series-desc">Digital image series and works printed on contact film or acrylic boards. The threshold at which an image stops being legible.</p>
     </div>
 
+
+    <div class="work-block">
+      <div class="main-row">
+        <div class="work-main"><img src="images/soft-interference-digital-main.jpg" alt="柔性干扰 / Soft Interference — digital version" onerror="handleMissing(this)"></div>
+      </div>
+      <div class="work-caption">
+        <div class="title">柔性干扰 / Soft Interference</div>
+        <div class="meta">2026 · Digital work · Dimensions variable</div>
+      </div>
+    </div>
+
+    <div class="work-block">
+      <div class="main-row">
+        <div class="work-main"><img src="images/misregistered-gaze-digital-main.jpg" alt="错位的注视 / Misregistered Gaze — digital version" onerror="handleMissing(this)"></div>
+      </div>
+      <div class="work-caption">
+        <div class="title">错位的注视 / Misregistered Gaze</div>
+        <div class="meta">2026 · Digital work · Dimensions variable</div>
+      </div>
+    </div>
+
     <div class="work-block">
       <div class="main-row" style="grid-template-columns: 1fr 1fr;">
         <div class="work-main"><img src="images/ritual-digital-1.jpg" alt="Ritual in Submersion - Digital v1" onerror="handleMissing(this)"></div>
@@ -852,7 +1039,7 @@
 
     <div class="work-block">
       <div class="main-row" style="grid-template-columns: 1fr; max-width: 700px; margin-left: auto; margin-right: auto;">
-        <div class="work-main"><img src="images/blind-spot-main.jpg" alt="Blind Spot Inventory" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/blind-spot-digital-main.jpg" alt="Blind Spot Inventory" onerror="handleMissing(this)"></div>
       </div>
       <div class="work-caption">
         <div class="title">盲区清单 / Blind Spot Inventory</div>
@@ -1053,31 +1240,6 @@ function showPage(pageId) {
   });
 }
 
-function handleMissing(img) {
-  try {
-    var src = img.getAttribute('src') || '';
-    var filename = src.replace('images/', '').replace('.jpg', '');
-    if (img.classList.contains('hero-bg')) {
-      var div = document.createElement('div');
-      div.className = 'hero-bg placeholder';
-      div.textContent = '[ ' + src + ' ]';
-      if (img.parentNode) img.parentNode.replaceChild(div, img);
-      return;
-    }
-    var parent = img.parentElement;
-    if (!parent) return;
-    if (parent.classList.contains('work-main')) {
-      parent.classList.add('placeholder');
-      parent.innerHTML = '[ ' + src + ' ]';
-    } else if (parent.classList.contains('work-detail')) {
-      parent.classList.add('placeholder');
-      parent.innerHTML = '[ ' + filename + ' ]';
-    }
-  } catch(e) {
-    img.style.display = 'none';
-  }
-}
-
 document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('img').forEach(function(img) {
     if (img.complete && img.naturalWidth === 0) {
@@ -1149,3 +1311,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
