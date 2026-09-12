@@ -8,7 +8,8 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=JetBrains+Mono:wght@300;400;500&family=Noto+Sans+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=JetBrains+Mono:wght@300;400;500&family=Noto+Sans+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=VT323&family=JetBrains+Mono:wght@300;400;500&family=Noto+Sans+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500&display=swap" rel="stylesheet"></noscript>
 
 <style>
   :root {
@@ -1260,6 +1261,7 @@ function showPage(pageId) {
   var target = document.getElementById(pageId);
   if (target) {
     target.classList.add('active');
+    target.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));
     window.scrollTo(0, 0);
   }
   // Update nav highlighting
@@ -1287,16 +1289,26 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) entry.target.classList.add('visible');
-  });
-}, { threshold: 0.1 });
+const animatedElements = document.querySelectorAll(
+  '.series-header, .bio-grid, .statement-grid, .cv-section, .work-block'
+);
 
-document.querySelectorAll('.series-header, .bio-grid, .statement-grid, .cv-section, .work-block').forEach(el => {
-  el.classList.add('fade-in');
-  observer.observe(el);
-});
+animatedElements.forEach(el => el.classList.add('fade-in'));
+
+if ('IntersectionObserver' in window) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  animatedElements.forEach(el => observer.observe(el));
+} else {
+  animatedElements.forEach(el => el.classList.add('visible'));
+}
 
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
