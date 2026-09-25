@@ -58,7 +58,9 @@
     background: var(--bg); border: 1px solid var(--line);
     padding: 8px; display: flex; flex-direction: column; gap: 6px;
   }
-  .has-dropdown:hover .dropdown { display: flex; }
+  .has-dropdown:hover .dropdown,
+  .has-dropdown:focus-within .dropdown,
+  .has-dropdown.open .dropdown { display: flex; }
   .dropdown a { border: none; padding: 6px 10px; font-size: 12px; white-space: nowrap; }
   .dropdown a:hover { background: var(--line); color: var(--bg); }
 
@@ -282,10 +284,46 @@
   .lightbox .next { right: 32px; }
 
   @media (max-width: 768px) {
-    nav { padding: 14px 16px; }
-    nav ul { gap: 8px; font-size: 11px; }
-    nav ul a { padding: 3px 6px; }
-    .dropdown { min-width: 110px; }
+    nav {
+      padding: 10px 14px;
+      gap: 12px;
+      min-height: 58px;
+    }
+    nav .logo { flex: 0 0 auto; }
+    nav ul {
+      flex: 1 1 auto;
+      gap: 6px;
+      font-size: 11px;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    nav ul::-webkit-scrollbar { display: none; }
+    nav ul a {
+      min-height: 36px;
+      padding: 6px 8px;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      touch-action: manipulation;
+    }
+    .dropdown {
+      position: fixed;
+      top: 52px;
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 170px;
+      padding-top: 6px;
+      z-index: 120;
+    }
+    .dropdown-inner { box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+    .hero {
+      margin-top: 58px;
+      height: calc(100svh - 58px);
+      min-height: 480px;
+      max-height: 760px;
+    }
     .hero-overlay { padding: 24px; }
     .info-strip { grid-template-columns: 1fr; gap: 16px; }
     #statement, #cv, #bio { padding: 60px 20px; }
@@ -312,14 +350,34 @@
     .cv-entry { grid-template-columns: 90px 1fr; gap: 12px; }
     #contact { padding: 80px 20px; }
     .contact-meta { flex-direction: column; gap: 12px; }
-    .lightbox { padding: 20px; }
-    .lightbox .nav-btn { font-size: 20px; padding: 6px 10px; }
-    .lightbox .prev { left: 12px; }
-    .lightbox .next { right: 12px; }
+    .lightbox { padding: 64px 16px 76px; }
+    .lightbox img { max-width: 96vw; max-height: calc(100dvh - 150px); }
+    .lightbox .close {
+      top: 12px;
+      right: 12px;
+      min-width: 44px;
+      min-height: 44px;
+    }
+    .lightbox .nav-btn {
+      top: auto;
+      bottom: 14px;
+      transform: none;
+      min-width: 48px;
+      min-height: 44px;
+      font-size: 22px;
+      padding: 6px 12px;
+      touch-action: manipulation;
+    }
+    .lightbox .prev { left: 16px; }
+    .lightbox .next { right: 16px; }
   }
 
   .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.8s ease, transform 0.8s ease; }
   .fade-in.visible { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in,
+    .fade-in.visible { opacity: 1; transform: none; transition: none; }
+  }
 
   /* ==== PAGE NAVIGATION ==== */
   .page { display: none; }
@@ -415,39 +473,39 @@ function handleMissing(img) {
 <body>
 
 <nav>
-  <div class="logo" onclick="showPage('home')" style="cursor:pointer;">Demi Gao ▮</div>
+  <a class="logo" href="#home" onclick="showPage('home'); return false;">Demi Gao ▮</a>
   <ul>
-    <li><a href="#" onclick="showPage('home'); return false;" data-page="home">Home</a></li>
-    <li><a href="#" onclick="showPage('bio'); return false;" data-page="bio">Bio</a></li>
-    <li><a href="#" onclick="showPage('statement'); return false;" data-page="statement">Statement</a></li>
+    <li><a href="#home" onclick="showPage('home'); return false;" data-page="home">Home</a></li>
+    <li><a href="#bio" onclick="showPage('bio'); return false;" data-page="bio">Bio</a></li>
+    <li><a href="#statement" onclick="showPage('statement'); return false;" data-page="statement">Statement</a></li>
     <li class="has-dropdown">
-      <a href="#" onclick="showPage('painting'); return false;">Works</a>
+      <a href="#painting" class="works-trigger" aria-haspopup="true" aria-expanded="false" onclick="return handleWorksTrigger(event);">Works</a>
       <div class="dropdown">
         <div class="dropdown-inner">
-          <a href="#" onclick="showPage('painting'); return false;" data-page="painting">Painting</a>
-          <a href="#" onclick="showPage('screenprint'); return false;" data-page="screenprint">Screenprint</a>
-          <a href="#" onclick="showPage('mixed-media'); return false;" data-page="mixed-media">Mixed Media</a>
-          <a href="#" onclick="showPage('digital-work'); return false;" data-page="digital-work">Digital Work</a>
+          <a href="#painting" onclick="showPage('painting'); return false;" data-page="painting">Painting</a>
+          <a href="#screenprint" onclick="showPage('screenprint'); return false;" data-page="screenprint">Screenprint</a>
+          <a href="#mixed-media" onclick="showPage('mixed-media'); return false;" data-page="mixed-media">Mixed Media</a>
+          <a href="#digital-work" onclick="showPage('digital-work'); return false;" data-page="digital-work">Digital Work</a>
         </div>
       </div>
     </li>
-    <li><a href="#" onclick="showPage('cv'); return false;" data-page="cv">CV</a></li>
-    <li><a href="#" onclick="showPage('contact'); return false;" data-page="contact">Contact</a></li>
+    <li><a href="#cv" onclick="showPage('cv'); return false;" data-page="cv">CV</a></li>
+    <li><a href="#contact" onclick="showPage('contact'); return false;" data-page="contact">Contact</a></li>
   </ul>
 </nav>
 
 <div class="page active" id="home">
 <header class="hero">
-  <img src="images/hero.jpg" alt="" class="hero-bg" onerror="handleMissing(this)">
+  <img src="images/hero.jpg" alt="" class="hero-bg" loading="eager" fetchpriority="high" decoding="async" onerror="handleMissing(this)">
   <div class="hero-overlay">
     <div></div>
     <div><h1 class="hero-title">SpectralArchive</h1></div>
     <div class="hero-bottom">
       <div class="info-list">
-        <a href="#" onclick="showPage('painting'); return false;" class="label">Painting</a>
-        <a href="#" onclick="showPage('screenprint'); return false;" class="label">Screenprint</a>
-        <a href="#" onclick="showPage('mixed-media'); return false;" class="label">Mixed Media</a>
-        <a href="#" onclick="showPage('digital-work'); return false;" class="label">Digital Work</a>
+        <a href="#painting" onclick="showPage('painting'); return false;" class="label">Painting</a>
+        <a href="#screenprint" onclick="showPage('screenprint'); return false;" class="label">Screenprint</a>
+        <a href="#mixed-media" onclick="showPage('mixed-media'); return false;" class="label">Mixed Media</a>
+        <a href="#digital-work" onclick="showPage('digital-work'); return false;" class="label">Digital Work</a>
       </div>
       <div class="right">© Demi Gao</div>
     </div>
@@ -563,11 +621,11 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/between-speech-and-silence-main.jpg" alt="Between Speech and Silence / 欲言" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/between-speech-and-silence-main.jpg" alt="Between Speech and Silence / 欲言" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/between-speech-and-silence-detail-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/between-speech-and-silence-detail-2.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/between-speech-and-silence-detail-3.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/between-speech-and-silence-detail-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/between-speech-and-silence-detail-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/between-speech-and-silence-detail-3.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -578,11 +636,11 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/before-the-night-recognized-me-main.jpg" alt="Before the Night Recognized Me / 在夜色认出我以前" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/before-the-night-recognized-me-main.jpg" alt="Before the Night Recognized Me / 在夜色认出我以前" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/before-the-night-recognized-me-detail-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/before-the-night-recognized-me-detail-2.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/before-the-night-recognized-me-detail-3.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/before-the-night-recognized-me-detail-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/before-the-night-recognized-me-detail-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/before-the-night-recognized-me-detail-3.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -593,11 +651,11 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/through-here-main.jpg" alt="经由此处 / Through Here" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/through-here-main.jpg" alt="经由此处 / Through Here" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/through-here-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/through-here-2.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/through-here-3.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/through-here-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/through-here-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/through-here-3.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -608,10 +666,10 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/corroded-main.jpg" alt="蚀 / Corroded" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/corroded-main.jpg" alt="蚀 / Corroded" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/corroded-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/corroded-2.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/corroded-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/corroded-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -622,10 +680,10 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/signal-elegy-main.jpg" alt="信号挽歌 / Signal Elegy" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/signal-elegy-main.jpg" alt="信号挽歌 / Signal Elegy" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/signal-elegy-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/signal-elegy-2.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/signal-elegy-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/signal-elegy-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -636,11 +694,11 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/self-crossing-main.jpg" alt="自渡 / Self-crossing" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/self-crossing-main.jpg" alt="自渡 / Self-crossing" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/self-crossing-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/self-crossing-2.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/self-crossing-3.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/self-crossing-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/self-crossing-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/self-crossing-3.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -651,10 +709,10 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/last-gesture-main.jpg" alt="末势 / Last Gesture" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/last-gesture-main.jpg" alt="末势 / Last Gesture" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/last-gesture-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/last-gesture-2.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/last-gesture-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/last-gesture-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -665,10 +723,10 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/exit-face-main.jpg" alt="How to Exit a Face?" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/exit-face-main.jpg" alt="How to Exit a Face?" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/exit-face-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/exit-face-2.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/exit-face-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/exit-face-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -679,10 +737,10 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/purge-main.jpg" alt="飞光喷焰，荡秽除腥 / Purge" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/purge-main.jpg" alt="飞光喷焰，荡秽除腥 / Purge" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/purge-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/purge-2.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/purge-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/purge-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -693,11 +751,11 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/split-evidence-main.jpg" alt="裂证 / Split Evidence" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/split-evidence-main.jpg" alt="裂证 / Split Evidence" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/split-evidence-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/split-evidence-2.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/split-evidence-3.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/split-evidence-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/split-evidence-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/split-evidence-3.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -708,10 +766,10 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/becoming-briefly-main.jpg" alt="一度成为 / Becoming, Briefly" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/becoming-briefly-main.jpg" alt="一度成为 / Becoming, Briefly" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/becoming-briefly-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/becoming-briefly-2.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/becoming-briefly-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/becoming-briefly-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -722,7 +780,7 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row" style="grid-template-columns: 1fr; max-width: 800px; margin-left: auto; margin-right: auto;">
-        <div class="work-main"><img src="images/sweep-away-main.jpg" alt="Sweep Away All Cow Demons and Snake Spirits" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/sweep-away-main.jpg" alt="Sweep Away All Cow Demons and Snake Spirits" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">横扫一切牛鬼蛇神 / Sweep Away All Cow Demons and Snake Spirits</div>
@@ -732,9 +790,9 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/fixing-chair-main.jpg" alt="修椅子 / Fixing Chair" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/fixing-chair-main.jpg" alt="修椅子 / Fixing Chair" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/fixing-chair-1.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/fixing-chair-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -756,10 +814,10 @@ function handleMissing(img) {
 
   <div class="work-block">
     <div class="main-row">
-      <div class="work-main"><img src="images/misregistered-receding-combo.jpg" alt="Misregistered Gaze and Receding — combined view" onerror="handleMissing(this)"></div>
-      <div class="work-main"><img src="images/misregistered-gaze-screenprint-main.jpg" alt="错位的注视 / Misregistered Gaze — main view" onerror="handleMissing(this)"></div>
-      <div class="work-main"><img src="images/receding-screenprint-main.jpg" alt="退潮 / Receding — main view" onerror="handleMissing(this)"></div>
-      <div class="work-main"><img src="images/receding-screenprint-detail-1.jpg" alt="退潮 / Receding — detail" onerror="handleMissing(this)"></div>
+      <div class="work-main"><img src="images/misregistered-receding-combo.jpg" alt="Misregistered Gaze and Receding — combined view" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+      <div class="work-main"><img src="images/misregistered-gaze-screenprint-main.jpg" alt="错位的注视 / Misregistered Gaze — main view" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+      <div class="work-main"><img src="images/receding-screenprint-main.jpg" alt="退潮 / Receding — main view" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+      <div class="work-main"><img src="images/receding-screenprint-detail-1.jpg" alt="退潮 / Receding — detail" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
     </div>
     <div class="work-caption">
       <div class="caption-entry">
@@ -775,9 +833,9 @@ function handleMissing(img) {
 
   <div class="work-block">
     <div class="main-row">
-      <div class="work-main"><img src="images/slow-vanishing-main.jpg" alt="A Slow Vanishing / 一场缓慢的隐去 — main view" onerror="handleMissing(this)"></div>
-      <div class="work-detail"><img src="images/slow-vanishing-detail-1.jpg" alt="A Slow Vanishing detail 1" onerror="handleMissing(this)"></div>
-      <div class="work-detail"><img src="images/slow-vanishing-detail-2.jpg" alt="A Slow Vanishing detail 2" onerror="handleMissing(this)"></div>
+      <div class="work-main"><img src="images/slow-vanishing-main.jpg" alt="A Slow Vanishing / 一场缓慢的隐去 — main view" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+      <div class="work-detail"><img src="images/slow-vanishing-detail-1.jpg" alt="A Slow Vanishing detail 1" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+      <div class="work-detail"><img src="images/slow-vanishing-detail-2.jpg" alt="A Slow Vanishing detail 2" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
     </div>
     <div class="work-caption">
       <div class="title">A Slow Vanishing / 一场缓慢的隐去</div>
@@ -798,9 +856,9 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/soft-captivity-main.jpg" alt="Soft Captivity / 柔软的囚禁 — main view" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/soft-captivity-detail-1.jpg" alt="Soft Captivity detail" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/soft-captivity-install-1.jpg" alt="Soft Captivity graduation exhibition view" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/soft-captivity-main.jpg" alt="Soft Captivity / 柔软的囚禁 — main view" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/soft-captivity-detail-1.jpg" alt="Soft Captivity detail" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/soft-captivity-install-1.jpg" alt="Soft Captivity graduation exhibition view" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">Soft Captivity / 柔软的囚禁</div>
@@ -810,11 +868,11 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/soft-interference-mixed-main.jpg" alt="Soft Interference / 柔性干扰 — mixed-media version" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/soft-interference-mixed-detail-1.jpg" alt="Soft Interference detail 1" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/soft-interference-mixed-detail-2.jpg" alt="Soft Interference detail 2" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/soft-interference-mixed-detail-3.jpg" alt="Soft Interference detail 3" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/soft-interference-mixed-detail-4.jpg" alt="Soft Interference detail 4" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/soft-interference-mixed-main.jpg" alt="Soft Interference / 柔性干扰 — mixed-media version" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/soft-interference-mixed-detail-1.jpg" alt="Soft Interference detail 1" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/soft-interference-mixed-detail-2.jpg" alt="Soft Interference detail 2" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/soft-interference-mixed-detail-3.jpg" alt="Soft Interference detail 3" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/soft-interference-mixed-detail-4.jpg" alt="Soft Interference detail 4" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">Soft Interference / 柔性干扰</div>
@@ -824,11 +882,11 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/anatomy-echo-main.jpg" alt="Anatomy of an Echo / 回声的解剖 — main view" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/anatomy-echo-detail-1.jpg" alt="Anatomy of an Echo detail 1" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/anatomy-echo-detail-2.jpg" alt="Anatomy of an Echo detail 2" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/anatomy-echo-detail-3.jpg" alt="Anatomy of an Echo detail 3" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/anatomy-echo-detail-4.jpg" alt="Anatomy of an Echo detail 4" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/anatomy-echo-main.jpg" alt="Anatomy of an Echo / 回声的解剖 — main view" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/anatomy-echo-detail-1.jpg" alt="Anatomy of an Echo detail 1" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/anatomy-echo-detail-2.jpg" alt="Anatomy of an Echo detail 2" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/anatomy-echo-detail-3.jpg" alt="Anatomy of an Echo detail 3" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/anatomy-echo-detail-4.jpg" alt="Anatomy of an Echo detail 4" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">Anatomy of an Echo / 回声的解剖</div>
@@ -838,9 +896,9 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/blind-spot-mixed-main.jpg" alt="Blind Spot Inventory / 盲区清单 — mixed-media version" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/blind-spot-mixed-detail-1.jpg" alt="Blind Spot Inventory detail" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/blind-spot-mixed-install-1.jpg" alt="Blind Spot Inventory graduation exhibition view" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/blind-spot-mixed-main.jpg" alt="Blind Spot Inventory / 盲区清单 — mixed-media version" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/blind-spot-mixed-detail-1.jpg" alt="Blind Spot Inventory detail" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/blind-spot-mixed-install-1.jpg" alt="Blind Spot Inventory graduation exhibition view" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">Blind Spot Inventory / 盲区清单</div>
@@ -850,10 +908,10 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/blue-hush-main.jpg" alt="Blue Hush — main view" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/blue-hush-detail-1.jpg" alt="Blue Hush detail 1" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/blue-hush-detail-2.jpg" alt="Blue Hush detail 2" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/blue-hush-detail-3.jpg" alt="Blue Hush detail 3" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/blue-hush-main.jpg" alt="Blue Hush — main view" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/blue-hush-detail-1.jpg" alt="Blue Hush detail 1" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/blue-hush-detail-2.jpg" alt="Blue Hush detail 2" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/blue-hush-detail-3.jpg" alt="Blue Hush detail 3" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">Blue Hush</div>
@@ -863,10 +921,10 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/temporary-monument-main.jpg" alt="Temporary Monument / 临时纪念碑 — main view" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/temporary-monument-detail-1.jpg" alt="Temporary Monument detail 1" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/temporary-monument-detail-2.jpg" alt="Temporary Monument detail 2" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/temporary-monument-detail-3.jpg" alt="Temporary Monument detail 3" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/temporary-monument-main.jpg" alt="Temporary Monument / 临时纪念碑 — main view" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/temporary-monument-detail-1.jpg" alt="Temporary Monument detail 1" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/temporary-monument-detail-2.jpg" alt="Temporary Monument detail 2" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/temporary-monument-detail-3.jpg" alt="Temporary Monument detail 3" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">Temporary Monument / 临时纪念碑</div>
@@ -876,12 +934,12 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/overflow-main.jpg" alt="Overflow / 溢出 — main view" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/overflow-detail-1.jpg" alt="Overflow detail 1" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/overflow-detail-2.jpg" alt="Overflow detail 2" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/overflow-detail-3.jpg" alt="Overflow detail 3" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/overflow-detail-4.jpg" alt="Overflow detail 4" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/overflow-detail-5.jpg" alt="Overflow detail 5" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/overflow-main.jpg" alt="Overflow / 溢出 — main view" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/overflow-detail-1.jpg" alt="Overflow detail 1" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/overflow-detail-2.jpg" alt="Overflow detail 2" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/overflow-detail-3.jpg" alt="Overflow detail 3" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/overflow-detail-4.jpg" alt="Overflow detail 4" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/overflow-detail-5.jpg" alt="Overflow detail 5" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">Overflow / 溢出</div>
@@ -891,9 +949,9 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row" style="grid-template-columns: 1fr 1fr 1fr;">
-        <div class="work-main"><img src="images/ritual-submersion-paper.jpg" alt="Ritual in Submersion - Paper" onerror="handleMissing(this)"></div>
-        <div class="work-main"><img src="images/ritual-submersion-canvas.jpg" alt="Ritual in Submersion - Textured Canvas" onerror="handleMissing(this)"></div>
-        <div class="work-main"><img src="images/ritual-submersion-textured-paper.jpg" alt="Ritual in Submersion - Textured Paper" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/ritual-submersion-paper.jpg" alt="Ritual in Submersion - Paper" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-main"><img src="images/ritual-submersion-canvas.jpg" alt="Ritual in Submersion - Textured Canvas" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-main"><img src="images/ritual-submersion-textured-paper.jpg" alt="Ritual in Submersion - Textured Paper" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">淹没中的仪式 / Ritual in Submersion</div>
@@ -903,11 +961,11 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/below-threshold-main.jpg" alt="阈值以下 / Below Threshold" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/below-threshold-main.jpg" alt="阈值以下 / Below Threshold" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/below-threshold-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/below-threshold-2.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/below-threshold-3.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/below-threshold-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/below-threshold-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/below-threshold-3.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -918,11 +976,11 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/honest-damage-main.jpg" alt="诚实的损伤 / Honest Damage" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/honest-damage-main.jpg" alt="诚实的损伤 / Honest Damage" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/honest-damage-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/honest-damage-2.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/honest-damage-3.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/honest-damage-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/honest-damage-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/honest-damage-3.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -933,11 +991,11 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/living-buffering-main.jpg" alt="在世者与缓冲中的存在 / The Living and the Buffering" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/living-buffering-main.jpg" alt="在世者与缓冲中的存在 / The Living and the Buffering" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/living-buffering-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/living-buffering-2.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/living-buffering-3.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/living-buffering-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/living-buffering-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/living-buffering-3.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -948,11 +1006,11 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/retreating-surface-main.jpg" alt="潮息 / Retreating Surface" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/retreating-surface-main.jpg" alt="潮息 / Retreating Surface" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/retreating-surface-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/retreating-surface-2.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/retreating-surface-3.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/retreating-surface-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/retreating-surface-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/retreating-surface-3.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -963,11 +1021,11 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/interior-weather-main.jpg" alt="内里有风 / Interior Weather" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/interior-weather-main.jpg" alt="内里有风 / Interior Weather" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/interior-weather-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/interior-weather-2.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/interior-weather-3.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/interior-weather-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/interior-weather-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/interior-weather-3.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -978,11 +1036,11 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/lying-idle-main.jpg" alt="在名为人生的河流之中躺平 / Lying Idle in the River Called Life" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/lying-idle-main.jpg" alt="在名为人生的河流之中躺平 / Lying Idle in the River Called Life" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/lying-idle-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/lying-idle-2.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/lying-idle-3.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/lying-idle-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/lying-idle-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/lying-idle-3.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -993,11 +1051,11 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/devouring-desires-main.jpg" alt="吞噬欲望 / Devouring Desires" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/devouring-desires-main.jpg" alt="吞噬欲望 / Devouring Desires" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/devouring-desires-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/devouring-desires-2.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/devouring-desires-3.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/devouring-desires-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/devouring-desires-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/devouring-desires-3.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -1008,11 +1066,11 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/new-waves-main.jpg" alt="New Waves" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/new-waves-main.jpg" alt="New Waves" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/new-waves-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/new-waves-2.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/new-waves-3.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/new-waves-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/new-waves-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/new-waves-3.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -1035,11 +1093,11 @@ function handleMissing(img) {
 
     <div class="work-block dual">
       <div class="main-row">
-        <div class="work-main"><img src="images/seduction-digital.jpg" alt="Seduction Error - Digital" onerror="handleMissing(this)"></div>
-        <div class="work-main"><img src="images/seduction-physical.jpg" alt="Seduction Error - Physical" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/seduction-physical-detail-1.jpg" alt="" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/seduction-physical-detail-2.jpg" alt="" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/seduction-physical-detail-3.jpg" alt="" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/seduction-digital.jpg" alt="Seduction Error - Digital" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-main"><img src="images/seduction-physical.jpg" alt="Seduction Error - Physical" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/seduction-physical-detail-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/seduction-physical-detail-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/seduction-physical-detail-3.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">Seduction Error</div>
@@ -1049,10 +1107,10 @@ function handleMissing(img) {
 
     <div class="work-block dual">
       <div class="main-row">
-        <div class="work-main"><img src="images/threshold-digital.jpg" alt="Threshold of Appearance - Digital" onerror="handleMissing(this)"></div>
-        <div class="work-main"><img src="images/threshold-physical.jpg" alt="Threshold of Appearance - Physical" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/threshold-physical-detail-1.jpg" alt="" onerror="handleMissing(this)"></div>
-        <div class="work-detail"><img src="images/threshold-physical-detail-2.jpg" alt="" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/threshold-digital.jpg" alt="Threshold of Appearance - Digital" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-main"><img src="images/threshold-physical.jpg" alt="Threshold of Appearance - Physical" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/threshold-physical-detail-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-detail"><img src="images/threshold-physical-detail-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">Threshold of Appearance</div>
@@ -1063,9 +1121,9 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/soft-interference-digital-main.jpg" alt="柔性干扰 / Soft Interference — digital version" onerror="handleMissing(this)"></div>
-        <div class="work-main"><img src="images/soft-interference-digital-2.jpg" alt="柔性干扰 / Soft Interference — digital version 2" onerror="handleMissing(this)"></div>
-        <div class="work-main"><img src="images/soft-interference-digital-3.jpg" alt="柔性干扰 / Soft Interference — digital version 3" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/soft-interference-digital-main.jpg" alt="柔性干扰 / Soft Interference — digital version" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-main"><img src="images/soft-interference-digital-2.jpg" alt="柔性干扰 / Soft Interference — digital version 2" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-main"><img src="images/soft-interference-digital-3.jpg" alt="柔性干扰 / Soft Interference — digital version 3" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">柔性干扰 / Soft Interference</div>
@@ -1075,7 +1133,7 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/misregistered-gaze-digital-main.jpg" alt="错位的注视 / Misregistered Gaze — digital version" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/misregistered-gaze-digital-main.jpg" alt="错位的注视 / Misregistered Gaze — digital version" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">错位的注视 / Misregistered Gaze</div>
@@ -1085,8 +1143,8 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row" style="grid-template-columns: 1fr 1fr;">
-        <div class="work-main"><img src="images/ritual-digital-1.jpg" alt="Ritual in Submersion - Digital v1" onerror="handleMissing(this)"></div>
-        <div class="work-main"><img src="images/ritual-digital-2.jpg" alt="Ritual in Submersion - Digital v2" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/ritual-digital-1.jpg" alt="Ritual in Submersion - Digital v1" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-main"><img src="images/ritual-digital-2.jpg" alt="Ritual in Submersion - Digital v2" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">淹没中的仪式 / Ritual in Submersion</div>
@@ -1096,7 +1154,7 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row" style="grid-template-columns: 1fr; max-width: 700px; margin-left: auto; margin-right: auto;">
-        <div class="work-main"><img src="images/blue-leak-main.jpg" alt="Blue Leak" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/blue-leak-main.jpg" alt="Blue Leak" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">蓝色泄漏 / Blue Leak</div>
@@ -1106,10 +1164,10 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row">
-        <div class="work-main"><img src="images/residual-main.jpg" alt="Residual Presence" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/residual-main.jpg" alt="Residual Presence" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         <div class="work-details">
-          <div class="work-detail"><img src="images/residual-1.jpg" alt="" onerror="handleMissing(this)"></div>
-          <div class="work-detail"><img src="images/residual-2.jpg" alt="" onerror="handleMissing(this)"></div>
+          <div class="work-detail"><img src="images/residual-1.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+          <div class="work-detail"><img src="images/residual-2.jpg" alt="" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <div class="work-caption">
@@ -1120,8 +1178,8 @@ function handleMissing(img) {
 
     <div class="work-block">
       <div class="main-row" style="grid-template-columns: 1fr 1fr;">
-        <div class="work-main"><img src="images/compatibility-failed-main.jpg" alt="Compatibility Failed - Digital" onerror="handleMissing(this)"></div>
-        <div class="work-main"><img src="images/compatibility-failed-print.jpg" alt="Compatibility Failed - Screenprint" onerror="handleMissing(this)"></div>
+        <div class="work-main"><img src="images/compatibility-failed-main.jpg" alt="Compatibility Failed - Digital" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
+        <div class="work-main"><img src="images/compatibility-failed-print.jpg" alt="Compatibility Failed - Screenprint" onerror="handleMissing(this)" loading="lazy" decoding="async"></div>
       </div>
       <div class="work-caption">
         <div class="title">兼容失败 / Compatibility Failed</div>
@@ -1254,31 +1312,63 @@ function handleMissing(img) {
 </div>
 
 <script>
-function showPage(pageId) {
-  // Hide all pages
+const validPages = new Set([
+  'home', 'bio', 'statement', 'painting', 'screenprint',
+  'mixed-media', 'digital-work', 'cv', 'contact'
+]);
+
+function showPage(pageId, updateHistory = true) {
+  if (!validPages.has(pageId)) pageId = 'home';
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  // Show target page
   var target = document.getElementById(pageId);
+
   if (target) {
     target.classList.add('active');
     target.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));
     window.scrollTo(0, 0);
   }
-  // Update nav highlighting
+
   document.querySelectorAll('nav a[data-page]').forEach(a => {
-    if (a.getAttribute('data-page') === pageId) {
-      a.classList.add('current');
-    } else {
-      a.classList.remove('current');
-    }
+    a.classList.toggle('current', a.getAttribute('data-page') === pageId);
   });
-  document.querySelectorAll('.dropdown a').forEach(a => {
-    if (a.getAttribute('data-page') === pageId) {
-      a.classList.add('current');
-    } else {
-      a.classList.remove('current');
-    }
-  });
+
+  var worksTrigger = document.querySelector('.works-trigger');
+  if (worksTrigger) {
+    worksTrigger.classList.toggle(
+      'current',
+      ['painting', 'screenprint', 'mixed-media', 'digital-work'].includes(pageId)
+    );
+  }
+
+  closeWorksMenu();
+
+  if (updateHistory && window.location.hash !== '#' + pageId) {
+    window.history.pushState({ pageId: pageId }, '', '#' + pageId);
+  }
+}
+
+function closeWorksMenu() {
+  var menu = document.querySelector('.has-dropdown');
+  var trigger = document.querySelector('.works-trigger');
+  if (menu) menu.classList.remove('open');
+  if (trigger) trigger.setAttribute('aria-expanded', 'false');
+}
+
+function handleWorksTrigger(event) {
+  var menu = document.querySelector('.has-dropdown');
+  var trigger = event.currentTarget;
+  var touchLayout = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
+  if (touchLayout && menu && !menu.classList.contains('open')) {
+    event.preventDefault();
+    menu.classList.add('open');
+    trigger.setAttribute('aria-expanded', 'true');
+    return false;
+  }
+
+  showPage('painting');
+  return false;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1287,6 +1377,22 @@ document.addEventListener('DOMContentLoaded', function() {
       handleMissing(img);
     }
   });
+
+  var initialPage = window.location.hash.slice(1);
+  showPage(validPages.has(initialPage) ? initialPage : 'home', false);
+
+  document.querySelectorAll('.dropdown a').forEach(function(link) {
+    link.addEventListener('click', closeWorksMenu);
+  });
+
+  document.addEventListener('click', function(event) {
+    if (!event.target.closest('.has-dropdown')) closeWorksMenu();
+  });
+});
+
+window.addEventListener('popstate', function() {
+  var pageId = window.location.hash.slice(1);
+  showPage(validPages.has(pageId) ? pageId : 'home', false);
 });
 
 const animatedElements = document.querySelectorAll(
